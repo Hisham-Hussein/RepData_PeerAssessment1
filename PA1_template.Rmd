@@ -1,14 +1,14 @@
 ---
 title: 'Reproducible Research: Peer Assessment 1'
 output:
+  pdf_document: default
   html_document:
     keep_md: yes
-  pdf_document: default
 ---
 
 
 ## Loading and preprocessing the data
-```{r}
+```{r preprocessing, echo = TRUE}
 library(ggplot2); library(dplyr); library(lubridate)
 
 data <- tbl_df(read.csv("activity.csv"))
@@ -33,7 +33,7 @@ data$day_time <- day_time
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+```{r mean total steps per day, echo = T}
 data_perDay <- data %>%
   group_by(date) %>%
   summarise(totSteps_perDay = sum(steps, na.rm = TRUE),
