@@ -96,4 +96,4 @@ median_total_new [1] 10766.19
 ## Are there differences in activity patterns between weekdays and weekends?
 
 
-knit2html()
+
