@@ -1,13 +1,14 @@
 ---
 title: 'Reproducible Research: Peer Assessment 1'
 output:
-  pdf_document: default
   html_document:
     keep_md: yes
+  pdf_document: default
 ---
 
 
 ## Loading and preprocessing the data
+
 ```{r preprocessing, echo = TRUE}
 library(ggplot2); library(dplyr); library(lubridate)
 
@@ -56,8 +57,8 @@ mean_total
 median_total
 ```
 
-- The mean total number of steps taken per day $= `r round(mean_total, 2)`$
-- The median of total number of steps taken per day $= `r round(median_total, 2)`$
+- The mean total number of steps taken per day = `r mean_total`
+- The median of total number of steps taken per day = `r median_total`
 
 ## What is the average daily activity pattern?
 

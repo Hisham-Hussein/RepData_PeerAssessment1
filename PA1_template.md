@@ -1,4 +1,10 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: 'Reproducible Research: Peer Assessment 1'
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
+---
 
 
 ## Loading and preprocessing the data
@@ -6,22 +12,7 @@
 
 ```r
 library(ggplot2); library(dplyr); library(lubridate)
-```
 
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 data <- tbl_df(read.csv("activity.csv"))
 
 
@@ -61,7 +52,7 @@ g <- g +
 g
 ```
 
-![](PA1_template_files/figure-html/mean total steps per day-1.png) 
+![plot of chunk mean total steps per day](figure/mean total steps per day-1.png) 
 
 ```r
 mean_total <- mean(data_perDay$totSteps_perDay)
@@ -113,7 +104,7 @@ g <- g +
 g
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png) 
 
 ```r
 daily_activity
@@ -228,7 +219,7 @@ g <- g +
 g
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 ```r
 mean_total_new <- mean(data_perDay_new$totSteps_perDay)
@@ -250,8 +241,8 @@ median_total_new
 ## [1] 10766.19
 ```
 
-- The average of total steps per day for the new data $= 1.0766189\times 10^{4}$
-- The median of total steps per day for the new data $= 1.0766189\times 10^{4}$ 
+- The average of total steps per day for the new data $= 1.0766189 &times; 10<sup>4</sup>$
+- The median of total steps per day for the new data $= 1.0766189 &times; 10<sup>4</sup>$ 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
