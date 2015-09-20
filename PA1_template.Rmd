@@ -1,25 +1,156 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
+title: 'Reproducible Research: Peer Assessment 1'
+output:
   html_document:
-    keep_md: true
+    keep_md: yes
+  pdf_document: default
 ---
 
 
 ## Loading and preprocessing the data
+```{r}
+library(ggplot2); library(dplyr); library(lubridate)
+
+data <- tbl_df(read.csv("activity.csv"))
+
+
+char_interval <- formatC(data$interval, width = 4, flag = "0")
+
+date_time <- strptime(paste(data$date, char_interval), format = "%Y-%m-%d %H%M")
+data$date_time <- as.POSIXct(date_time)
+
+
+# Create a new variable called day_time.
+# It will store the intervals as "Period" objects (from package lubridate)
+day_time <- format(data$date_time, format = "%H:%M")
+
+day_time <- hm(day_time)
+
+data$day_time <- day_time
+```
 
 
 
 ## What is mean total number of steps taken per day?
 
+```{r}
+data_perDay <- data %>%
+  group_by(date) %>%
+  summarise(totSteps_perDay = sum(steps, na.rm = TRUE),
+            avgSteps_perDay = mean(steps, na.rm = TRUE))
 
+g <- ggplot(data = data_perDay, aes(x = totSteps_perDay))
+g <- g + 
+  geom_histogram(fill = "salmon", color = 'black', binwidth = 1000) +
+  labs(list(title = "Number of Steps per Day", 
+            x = "Total Number of Steps per Day")) +
+  geom_vline(xintercept = mean(data_perDay$totSteps_perDay, 
+                               na.rm = T), size = 2)
+g
+
+mean_total <- mean(data_perDay$totSteps_perDay)
+
+median_total <- median(data_perDay$totSteps_perDay)
+
+mean_total
+median_total
+```
+
+- The mean total number of steps taken per day $= `r round(mean_total, 2)`$
+- The median of total number of steps taken per day $= `r round(median_total, 2)`$
 
 ## What is the average daily activity pattern?
+
+```{r}
+# Group the data by intervals and calculate the mean as per group
+# this will give us the avg. number of steps per interval 
+# averaged across all days
+daily_activity <- data %>%
+  group_by(interval) %>%
+  summarise(daily_avg_steps = mean(steps, na.rm = TRUE))
+
+# To plot, we need the intervals of any day as date_time object.
+# I extracted the first 24*12 rows from the date_time variable in the 
+# original data set. (We have 24 hours, each contains 12 intervals)
+# Then add it as a new column to the daily_activity data set
+daily_activity$date_time <- data$date_time[1: 288]
+daily_activity$day_time <- data$day_time[1: 288]
+
+library(scales)
+g <- ggplot(data = daily_activity, 
+            aes(x = date_time, y = daily_avg_steps)) 
+g <- g + 
+  geom_line() +
+  labs(list(title = "Average Daily Activity", x="Time", y="Average Daily Steps"))
+g
+
+daily_activity
+
+maxSteps_interval <- subset(daily_activity, daily_avg_steps == max(daily_avg_steps))$day_time
+```
+
+The $5-minute$ interval that contains the maximum number of steps is: 
+```{r}
+maxSteps_interval
+```
 
 
 
 ## Imputing missing values
+###1- Total number of missing values in the dataset:
+```{r}
+count_na <- sum(!complete.cases(data))
+count_na
+```
 
+###2, 3- A strategy for filling in all of the missing values in the dataset:
+```{r}
+# Examine each columns to see which ones contain NAs
+anyNA(data$date)
+anyNA(data$interval)
+anyNA(data$steps)
+
+# Only (steps) contains NAs
+# I will replace each NA value in the (steps) variable by the mean of
+# the entire variable, i.e: mean(steps)
+data_new <- data
+data_new$steps[is.na(data_new$steps)] <- mean(data_new$steps, na.rm = TRUE)
+```
+
+We can see now there's no any NA values in (steps):
+```{r}
+anyNA(data_new$steps)
+```
+
+###4- Plotting total steps per day and Calculating and reporting the mean and median
+
+```{r}
+data_perDay_new <- data_new %>%
+  group_by(date) %>%
+  summarise(totSteps_perDay = sum(steps),
+            avgSteps_perDay = mean(steps))
+
+g <- ggplot(data = data_perDay_new, aes(x = totSteps_perDay))
+g <- g + 
+  geom_histogram(fill = "salmon", color = 'black', binwidth = 1000) +
+  labs(list(title = "Number of Steps per Day", 
+            x = "Total Number of Steps per Day")) +
+  geom_vline(xintercept = mean(data_perDay_new$totSteps_perDay), size = 2)
+g
+
+mean_total_new <- mean(data_perDay_new$totSteps_perDay)
+
+median_total_new <- median(data_perDay_new$totSteps_perDay)
+
+mean_total_new
+median_total_new 
+```
+
+- The average of total steps per day for the new data $= `r mean_total_new`$
+- The median of total steps per day for the new data $= `r median_total_new`$ 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+
